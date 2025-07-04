@@ -124,3 +124,5 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+EMAIL_BACKEND = 'django.core.mail.bakcend.console.Email_Backend'
+DEFAULT_FROM_EMAIL= 'noreqply@bidora.com'
