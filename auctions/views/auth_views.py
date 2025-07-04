@@ -1,9 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.core.signing import Signer
 from django.core.signing import BadSignature
+from django.contrib.auth import authenticate
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+
 
 signer = Signer()
 
@@ -31,6 +35,7 @@ def signup(request):
        f'click the link to activate:{activation_link}',
        'noreply@bidora.com',
        [email],
+       fail_silently=False
     )
 
     return render(request,'signup.html',{'success':'Activation email sent. check your inbox'})
@@ -54,3 +59,27 @@ def activation_view(request,token):
         return HttpResponse("Invalid or tampered activation link.")
     except User.DoesNotExist:
         return HttpResponse("User not found.")
+
+def login_view(request):
+   if request.method=='POST':
+      username=request.POST.get('username')
+      password=request.POST.get('password')
+      user=authenticate(username=username,password=password)
+      if user is not None:
+         if user.is_active:
+            login(request,user)
+            return redirect('feed')
+         else:
+                return render(request, 'login.html', {'error': 'Account not activated. Please check your email.'})
+      else:
+            return render(request, 'login.html', {
+                'error': 'Login failed. Check username or password.',
+                'signup_link': '/signup/'
+            })
+
+   return render(request, 'login.html')
+
+@ login_required
+def feed_view(request):
+   return render(request,'feed.html')
+
