@@ -1,0 +1,30 @@
+<!-- auction/templates/auction/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Bidora{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Bidora</h1>
+        <nav>
+            <a href="{% url 'signup' %}">Signup</a> |
+            <a href="{% url 'login' %}">Login</a> |
+            <a href="{% url 'feed' %}">Feed</a>
+        </nav>
+        <hr>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Each page puts its content here -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <hr>
+        <p style="text-align:center;">&copy; 2025 Bidora</p>
+    </footer>
+</body>
+</html>

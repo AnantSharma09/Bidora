@@ -7,8 +7,7 @@ from django.core.signing import BadSignature
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-
-
+from urllib.parse import quote,unquote
 signer = Signer()
 
 def signup(request):
@@ -18,17 +17,18 @@ def signup(request):
     password = request.POST.get('password')
 
     if not (username and email and password):
-      return render(request,'signup.html',{'error':'All fields are required.'})
+      return render(request,'auction/signup.html',{'error':'All fields are required.'})
     
     if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-      return render(request,'signup.html',{'error':'Email or Username already exist.'})
+      return render(request,'auction/signup.html',{'error':'Email or Username already exist.'})
     
     user = User.objects.create_user(username= username, email=email,password=password)
     user.is_active=False
     user.save()
 
     token = signer.sign(user.pk)
-    activation_link = request.build_absolute_uri(f'/activation/{token}/')
+    safe_token = quote(token)
+    activation_link = request.build_absolute_uri(f'/activation/{safe_token}/')
 
     send_mail(
        'Account activation mail',
@@ -38,11 +38,12 @@ def signup(request):
        fail_silently=False
     )
 
-    return render(request,'signup.html',{'success':'Activation email sent. check your inbox'})
-  return render(request,'signup.html')
+    return render(request,'auction/signup.html',{'success':'Activation email sent. check your inbox'})
+  return render(request,'auction/signup.html')
 
 def activation_view(request,token):
     try:
+      token = unquote(token)
       user_id = signer.unsign(token)
 
       user = User.objects.get(pk=user_id)
@@ -70,16 +71,16 @@ def login_view(request):
             login(request,user)
             return redirect('feed')
          else:
-                return render(request, 'login.html', {'error': 'Account not activated. Please check your email.'})
+                return render(request, 'auction/login.html', {'error': 'Account not activated. Please check your email.'})
       else:
-            return render(request, 'login.html', {
+            return render(request, 'auction/login.html', {
                 'error': 'Login failed. Check username or password.',
                 'signup_link': '/signup/'
             })
 
-   return render(request, 'login.html')
+   return render(request, 'auction/login.html')
 
 @ login_required
 def feed_view(request):
-   return render(request,'feed.html')
+   return render(request,'auction/feed.html')
 
