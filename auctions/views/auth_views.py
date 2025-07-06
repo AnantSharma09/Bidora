@@ -6,6 +6,7 @@ from django.core.signing import Signer
 from django.core.signing import BadSignature
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from urllib.parse import quote,unquote
 signer = Signer()
@@ -84,3 +85,7 @@ def login_view(request):
 def feed_view(request):
    return render(request,'auction/feed.html')
 
+@ login_required
+def logout_view(request):
+   logout(request)
+   return redirect('login')

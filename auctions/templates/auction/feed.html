@@ -5,4 +5,11 @@
 {% block content %}
 <h2>Main Feed</h2>
 <p>You are successfully logged in!</p>
+
+<form method="post" action="{% url 'logout' %}">
+  {% csrf_token %}
+  <button type="submit">Logout</button>
+</form>
 {% endblock %}
+
+
