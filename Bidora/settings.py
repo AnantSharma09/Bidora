@@ -133,3 +133,6 @@ EMAIL_HOST_PASSWORD = 'pzbb cidr rhot mszj'
 DEFAULT_FROM_EMAIL= 'bidora6725@gmail.com'
 LOGIN_URL='/login/'
 #pzbb cidr rhot mszj
+
+MEDIA_URL='/media/'
+MEDIA_ROOT=BASE_DIR/'media'
