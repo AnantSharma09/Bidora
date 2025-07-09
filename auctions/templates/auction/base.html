@@ -12,6 +12,14 @@
             <a href="{% url 'signup' %}">Signup</a> |
             <a href="{% url 'login' %}">Login</a> |
             <a href="{% url 'feed' %}">Feed</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                 {% csrf_token %}
+                 <button type="submit">Logout</button>
+            </form>
+
+            <a href="{% url 'create_auction' %}">
+                <button>Create Auction</button>
+            </a>
         </nav>
         <hr>
     </header>

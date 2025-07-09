@@ -9,6 +9,7 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from urllib.parse import quote,unquote
+from auctions.models import AuctionModel
 signer = Signer()
 
 def signup(request):
@@ -83,7 +84,8 @@ def login_view(request):
 
 @ login_required
 def feed_view(request):
-   return render(request,'auction/feed.html')
+   auctions = AuctionModel.objects.all().order_by('-created_at')
+   return render(request,'auction/feed.html',{'auctions': auctions})
 
 @ login_required
 def logout_view(request):

@@ -4,12 +4,17 @@
 
 {% block content %}
 <h2>Main Feed</h2>
-<p>You are successfully logged in!</p>
 
-<form method="post" action="{% url 'logout' %}">
-  {% csrf_token %}
-  <button type="submit">Logout</button>
-</form>
+{% for auction in auctions %}
+  <div class="auction-post">
+    <h2>{{ auction.title }}</h2>
+    <p>{{ auction.description|truncatewords:30 }}</p>
+    <img src="{{ auction.image.url }}" alt="Product Image" width="200">
+    <p>Starting Bid: ₹{{ auction.starting_bid }}</p>
+    <a href="{% url 'auction_detail' auction.id %}">See More</a>
+  </div>
+{% endfor %}
+
 {% endblock %}
 
 

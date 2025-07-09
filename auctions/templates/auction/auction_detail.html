@@ -1,0 +1,10 @@
+{% extends 'auction/base.html' %}
+
+{% block title %}Auction Detail{% endblock %}
+
+{% block content %}
+  <h2>{{ auction.title }}</h2>
+  <p>{{ auction.description }}</p>
+  <p><strong>Starting Bid:</strong> ₹{{ auction.starting_bid }}</p>
+  <img src="{{ auction.image.url }}" alt="Product Image" width="300">
+{% endblock %}
