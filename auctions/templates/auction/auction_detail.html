@@ -26,10 +26,19 @@
   <p><strong>Age:</strong> {{ auction.age }}</p>
   <p><strong>Country:</strong> {{ auction.country }}</p>
   <p><strong>City:</strong> {{ auction.city }}</p>
+     {% if messages %}
+       <ul class="messages">
+         {% for message in messages %}
+           <li class="{{ message.tags }}">{{ message }}</li>
+         {% endfor %}
+       </ul>
+     {% endif %}
 
+  <h3>Register for Auction</h3>
 
   <form method="post" action="{% url 'register_for_auction' auction.id %}">
     {% csrf_token %}
+    {{form.as_p}}
     <button type="submit">Register for Auction</button>
   </form>
 

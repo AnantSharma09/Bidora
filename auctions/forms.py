@@ -11,4 +11,11 @@ class AuctionForm(forms.ModelForm):
             'time_of_auction','date_of_auction'
         ]
 
-
+class RegristrationForm(forms.ModelForm):
+    class Meta:
+        model =  RegistrationModel
+        fields = [
+            'name','age','country','city',
+            'premium_verification','bank_account_linked',
+            'gov_id_linked',
+        ]

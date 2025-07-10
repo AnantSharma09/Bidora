@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect , get_object_or_404
-from auctions.forms import AuctionForm
+from auctions.forms import AuctionForm,RegristrationForm
 from auctions.models import AuctionModel,RegistrationModel 
 from django.contrib import messages
 
@@ -14,7 +14,7 @@ def create_auction_view(request):
             auction.save()
             return redirect('feed')
     else:
-        form = AuctionForm()
+          form = AuctionForm()
 
     return render(request, 'auction/create_auction.html', {'form': form})
 
@@ -22,24 +22,41 @@ def auction_detail_view(request, auction_id):
     auction = get_object_or_404(AuctionModel, id=auction_id)
     return render(request, 'auction/auction_detail.html',{'auction':auction})
 
-@ login_required
-def auction_registration_view(request,auction_id):
-    auction = get_object_or_404(AuctionModel,id=auction_id)
-    
-    already_registered = RegistrationModel.objects.filter(auction=auction,user=request.user).exists()
-    if already_registered:
-        messages.warning(request,"Your have already registered for this auction.")
-        return redirect('auction_detail',auction_id=auction.id)
-    
-    RegistrationModel.objects.create(
-        auction = auction,
-        user = request.user,
-        name = request.user.get_full_name() or request.user.username,
-        age=18,
-        country="Unknown",
-        premium_verification=False,
-        bank_account_linked=False,
-        gov_id_linked=False,
-    )
-    messages.success(request,"You have been successfully registered for the auction.")
-    return redirect('auction_detail',auction_id=auction.id)
+@login_required
+def auction_registration_view(request, auction_id):
+    auction = get_object_or_404(AuctionModel, id=auction_id)
+
+    if request.method == 'POST':
+        form = RegristrationForm(request.POST)
+        if form.is_valid():
+            # Check if already registered
+            already_registered = RegistrationModel.objects.filter(
+                auction=auction, user=request.user).exists()
+            if already_registered:
+                messages.warning(request, "You have already registered for this auction.")
+                return redirect('auction_detail', auction_id=auction.id)
+
+            # Extract cleaned data from the form
+            age = form.cleaned_data.get('age', 0)
+            gov_id = form.cleaned_data.get('gov_id_linked')
+            bank = form.cleaned_data.get('bank_account_linked')
+
+            if age < 18 or not (gov_id and bank):
+                messages.warning(request, "You must be 18+ and have government ID and bank linked to register.")
+                return redirect('auction_detail', auction_id=auction.id)
+
+            # Save the registration
+            registration = form.save(commit=False)
+            registration.auction = auction
+            registration.user = request.user
+            registration.save()
+            messages.success(request, "You are now registered for the auction.")
+            return redirect('auction_detail', auction_id=auction.id)
+    else:
+        form = RegristrationForm()
+
+    return render(request, 'auction/auction_detail.html', {
+        'form': form,
+        'auction': auction
+    })
+
