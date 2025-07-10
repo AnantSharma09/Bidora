@@ -1,10 +1,37 @@
 {% extends 'auction/base.html' %}
 
-{% block title %}Auction Detail{% endblock %}
+{% block title %}Auction Details{% endblock %}
 
 {% block content %}
-  <h2>{{ auction.title }}</h2>
-  <p>{{ auction.description }}</p>
-  <p><strong>Starting Bid:</strong> ₹{{ auction.starting_bid }}</p>
+  <h2>{{ auction.product_name }}</h2>
   <img src="{{ auction.image.url }}" alt="Product Image" width="300">
+   
+   {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+      <li class="{{ message.tags }}">{{ message }}</li>
+    {% endfor %}
+  </ul>
+ {% endif %}
+  <p><strong>Description:</strong> {{ auction.description }}</p>
+  <p><strong>Selling Points:</strong> {{ auction.unique_points }}</p>
+  <p><strong>Product Age:</strong> {{ auction.product_age }}</p>
+  <p><strong>Starting Bid:</strong> ₹{{ auction.starting_bid }}</p>
+  <p><strong>Auction Date:</strong> {{auction.date_of_auction}}</p>
+  <p><strong>Auction Time:</strong> {{auction.time_of_auction}}</p>
+  <hr>
+
+  <h3>Seller Info</h3>
+  <p><strong>Name:</strong> {{ auction.full_name }}</p>
+  <p><strong>Age:</strong> {{ auction.age }}</p>
+  <p><strong>Country:</strong> {{ auction.country }}</p>
+  <p><strong>City:</strong> {{ auction.city }}</p>
+
+
+  <form method="post" action="{% url 'register_for_auction' auction.id %}">
+    {% csrf_token %}
+    <button type="submit">Register for Auction</button>
+  </form>
+
+
 {% endblock %}

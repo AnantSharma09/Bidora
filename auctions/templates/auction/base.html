@@ -1,28 +1,58 @@
-<!-- auction/templates/auction/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Bidora{% endblock %}</title>
+    <style>
+        .messages {
+            list-style: none;
+            padding: 10px;
+        }
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        .messages li.warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .messages li.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>Welcome to Bidora</h1>
         <nav>
-            <a href="{% url 'signup' %}">Signup</a> |
-            <a href="{% url 'login' %}">Login</a> |
-            <a href="{% url 'feed' %}">Feed</a>
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                 {% csrf_token %}
-                 <button type="submit">Logout</button>
-            </form>
-
-            <a href="{% url 'create_auction' %}">
-                <button>Create Auction</button>
-            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'feed' %}">Feed</a> |
+                <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
+                <a href="{% url 'create_auction' %}">
+                    <button>Create Auction</button>
+                </a>
+            {% else %}
+                <a href="{% url 'signup' %}">Signup</a> |
+                <a href="{% url 'login' %}">Login</a>
+            {% endif %}
         </nav>
         <hr>
     </header>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 
     <main>
         {% block content %}

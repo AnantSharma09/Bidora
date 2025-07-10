@@ -10,4 +10,5 @@ urlpatterns = [
   path('logout/',auth_views.logout_view,name='logout'),
   path('create_auction/',auction_view.create_auction_view,name='create_auction'),
   path('auction/<int:auction_id>/', auction_view.auction_detail_view, name='auction_detail'),
+  path('auction/<int:auction_id>/register/',auction_view.auction_registration_view,name='register_for_auction')
 ]
