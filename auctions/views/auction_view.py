@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect , get_object_or_404
 from auctions.forms import AuctionForm,RegristrationForm
 from auctions.models import AuctionModel,RegistrationModel 
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings 
 
 @login_required
 def create_auction_view(request):
@@ -50,7 +52,15 @@ def auction_registration_view(request, auction_id):
             registration.auction = auction
             registration.user = request.user
             registration.save()
-            messages.success(request, "You are now registered for the auction.")
+            send_mail(
+                subject='Auction Regristration Confirmation',
+                message=f'Dear {request.user.username},\n\nYou have successfully registered for the auction: "{auction.product_name}".\n\nAuction Date: {auction.date_of_auction}\nTime: {auction.time_of_auction}\n\nThank you for using Bidora!',
+                from_email = settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[request.user.email],
+                fail_silently=False,
+            )
+            
+            messages.success(request, "You are now registered for the auction,Please check your mail.")
             return redirect('auction_detail', auction_id=auction.id)
     else:
         form = RegristrationForm()
