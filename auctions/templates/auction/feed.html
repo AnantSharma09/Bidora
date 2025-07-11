@@ -8,12 +8,19 @@
 {% for auction in auctions %}
   <div class="auction-post">
     <h2>{{ auction.title }}</h2>
+    {% if auction.is_live%}
+      🔴 Live Now
+    {% else %}
+      <a href="{% url 'auction_detail' auction.id %}">See More</a>
+    {% endif %}
     <p>{{ auction.description|truncatewords:30 }}</p>
     <img src="{{ auction.image.url }}" alt="Product Image" width="200">
     <p>Starting Bid: ₹{{ auction.starting_bid }}</p>
     <a href="{% url 'auction_detail' auction.id %}">See More</a>
   </div>
 {% endfor %}
+
+
 
 {% endblock %}
 

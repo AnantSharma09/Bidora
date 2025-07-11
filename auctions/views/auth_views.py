@@ -10,6 +10,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from urllib.parse import quote,unquote
 from auctions.models import AuctionModel
+from django.utils import timezone
 signer = Signer()
 
 def signup(request):

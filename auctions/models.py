@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from datetime import date,time
+from django.utils import timezone
 # Auction Model (Post / Listing)
 class AuctionModel(models.Model):
     # User Info
@@ -31,6 +32,11 @@ class AuctionModel(models.Model):
     bank_account_linked = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    # is live function
+    def is_live(self):
+        now=timezone.now()
+        return self.date_of_auction == now.date() and self.time_of_auction <= now.time() 
 
     def __str__(self):
         return self.title
